@@ -113,11 +113,14 @@ those calls — it made it faster to test them.
 
 ## Dataset
 
-The dataset contains synthetic transaction data from the **Shopee Thailand platform**, covering
-approximately four years from 2022 to 2025. It represents activity on one platform, not the Thai
-e-commerce market as a whole — none of the findings below should be read as country-level claims.
+The dataset is **synthetic e-commerce transaction data modeled on the Shopee Thailand context** —
+not actual Shopee transaction records. It covers approximately four years (2022–2025) and was
+built as a sample dataset for practicing analysis methods and business reasoning, not to reproduce
+the real scale of the platform. At 300,000 orders and 200 sellers over four years, this dataset is
+far smaller than Shopee Thailand's actual order and seller volume, and none of the findings below
+should be read as claims about Shopee's real business or the Thai e-commerce market as a whole.
 
-| Data | Records |
+| Data | Scale |
 |---|---:|
 | Customers | 60,000 |
 | Orders | 300,000 |
@@ -125,7 +128,9 @@ e-commerce market as a whole — none of the findings below should be read as co
 | Sellers | 200 |
 | Observation period | 2022–2025 |
 
-The analysis uses customer, order, order-item, product, and seller data.
+The analysis uses customer, order, order-item, product, and seller data. Source:
+[Shopee TH: Customer Journey & Operations Dataset](https://www.kaggle.com/datasets/hninshwezinhlaing/shopee-th-customer-journey-and-operations-dataset)
+(Kaggle, by Hnin Shwe Zin Hlaing) — see [data/README.md](data/README.md) for full table-level detail.
 
 ### Revenue definition
 
@@ -317,7 +322,11 @@ e-commerce market as a whole, and some product-level fields have limited variati
 findings should be interpreted with appropriate caution.
 
 Experimental data, customer-level marketing exposure, and additional operational data would be
-needed to validate the proposed interventions.
+needed to validate the proposed interventions. Notably, the dataset includes a marketing-event
+timeline (`campaigns`) that its publisher documents as designed for A/B testing campaign
+performance against organic baseline periods — that analysis is out of scope here by design, since
+Project 2 focuses on customer, product, and seller drivers of value rather than campaign
+effectiveness. See [data/README.md](data/README.md) for details.
 
 ---
 
