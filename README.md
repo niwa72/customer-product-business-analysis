@@ -2,6 +2,8 @@
 
 **[SQL](sql/) · [Notebook](analysis/customer_product_analysis.ipynb) · [Dashboard](dashboard/index.html) · [One-page summary](presentation/summary.md) · [Data notes](data/README.md)**
 
+*[日本語で読む](README.ja.md)*
+
 A customer and product analysis project for an e-commerce business, built to show how I actually
 work: define a business question, use AI to accelerate the mechanical parts of analysis, and rely
 on my own judgment to validate, challenge, and interpret what the data actually supports.
