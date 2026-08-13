@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Assisted Business Analysis — Customer & Product Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F3F4F1;
+    --panel: #FFFFFF;
+    --ink: #1B1F1D;
+    --ink-soft: #5B5E55;
+    --ink-faint: #8B8D84;
+    --accent: #1F6F5C;
+    --accent-deep: #164F42;
+    --accent-soft: #D9E8E3;
+    --neutral-bar: #CBC9C0;
+    --line: #DEDCD3;
+    --warn: #B8542E;
+    --warn-soft: #F1DCD2;
+    --radius: 3px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+
+  /* ---------- Header / Hero ---------- */
+
+  .eyebrow{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+
+  h1{
+    font-family: 'Source Serif 4', serif;
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+    max-width: 780px;
+  }
+
+  .subhead{
+    font-size: 15px;
+    color: var(--ink-soft);
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 44px;
+  }
+
+  .hero-stat{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 30px 34px;
+    display: flex;
+    align-items: baseline;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat .big{
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    font-size: 52px;
+    color: var(--accent-deep);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .hero-stat .desc{
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    max-width: 380px;
+  }
+
+  .hero-stat .desc strong{ color: var(--ink); }
+
+  /* ---------- Sections ---------- */
+
+  section{
+    margin-top: 76px;
+  }
+
+  .section-head{
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 14px;
+  }
+
+  .section-num{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-faint);
+    letter-spacing: 0.05em;
+  }
+
+  .section-title{
+    font-family: 'Source Serif 4', serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .section-q{
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 16px 0 28px;
+    max-width: 620px;
+    line-height: 1.6;
+  }
+
+  .section-q em{
+    font-style: normal;
+    color: var(--ink);
+    border-bottom: 1px dotted var(--ink-faint);
+  }
+
+  .grid-2{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 24px 24px;
+  }
+
+  .card h3{
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+  }
+
+  .finding{
+    margin-top: 22px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    background: var(--accent-soft);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .finding strong{ color: var(--accent-deep); }
+
+  /* ---------- bar chart primitives ---------- */
+
+  .bars{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bar-row{
+    display: grid;
+    grid-template-columns: 64px 1fr 78px;
+    align-items: center;
+    gap: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+  }
+
+  .bar-label{ color: var(--ink-soft); text-align: right; }
+
+  .bar-track{
+    background: #EDEDE8;
+    border-radius: 2px;
+    height: 20px;
+    overflow: hidden;
+  }
+
+  .bar-fill{
+    height: 100%;
+    border-radius: 2px;
+    background: var(--neutral-bar);
+  }
+
+  .bar-fill.accent{ background: var(--accent); }
+
+  .bar-value{ color: var(--ink); font-weight: 500; }
+
+  /* ---------- category revenue mix ---------- */
+
+  .catmix{ display:flex; flex-direction:column; gap:9px; }
+  .catmix .bar-row{ grid-template-columns: 82px 1fr 52px; }
+
+  /* ---------- scatter (AOV vs repeat) ---------- */
+
+  .scatter{
+    position: relative;
+    height: 210px;
+    border-left: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin-top: 6px;
+  }
+  .scatter .pt{
+    position: absolute;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: translate(-50%, 50%);
+  }
+  .scatter .pt-label{
+    position: absolute;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    transform: translate(8px, -6px);
+    white-space: nowrap;
+  }
+  .scatter-axis{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    display:flex; justify-content:space-between;
+    margin-top: 6px;
+  }
+  .scatter-ylabel{
+    position:absolute; left:-8px; top:50%;
+    transform: rotate(-90deg) translate(50%, -50%);
+    transform-origin: left top;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px; color:var(--ink-faint);
+  }
+
+  /* ---------- over-index dot plot ---------- */
+
+  .overindex-row{
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    align-items: center;
+    gap: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    margin-bottom: 10px;
+  }
+  .oi-track{
+    position: relative;
+    height: 22px;
+    background: linear-gradient(to right, transparent 49%, var(--line) 49%, var(--line) 51%, transparent 51%);
+  }
+  .oi-dot{
+    position: absolute;
+    top: 50%;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: translate(-50%, -50%);
+  }
+  .oi-scale{
+    display:flex; justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;
+    font-size: 9.5px; color: var(--ink-faint);
+    margin-top: 4px; margin-left: 104px;
+  }
+
+  /* ---------- Seller hero (signature element) ---------- */
+
+  .seller-hero{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 32px 32px 28px;
+  }
+
+  .toggle-row{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .toggle-label{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .toggle{
+    position: relative;
+    width: 52px; height: 28px;
+    background: var(--ink);
+    border-radius: 999px;
+    cursor: pointer;
+    border: none;
+    flex-shrink: 0;
+  }
+  .toggle::after{
+    content:'';
+    position:absolute;
+    top: 3px; left: 3px;
+    width: 22px; height: 22px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.35s cubic-bezier(.65,0,.35,1);
+  }
+  .toggle.on::after{ transform: translateX(24px); }
+  .toggle.on{ background: var(--accent-deep); }
+
+  .seller-bars{ display:flex; flex-direction:column; gap:22px; }
+
+  .seller-bar-group{ }
+  .seller-bar-title{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    display:flex; justify-content:space-between;
+  }
+  .seller-bar-title .n{ color: var(--ink-faint); }
+
+  .seller-track{
+    background:#EDEDE8;
+    border-radius: 2px;
+    height: 34px;
+    position: relative;
+    overflow: hidden;
+  }
+  .seller-fill{
+    height:100%;
+    border-radius:2px;
+    display:flex;
+    align-items:center;
+    padding-left: 12px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color:#fff;
+    transition: width 0.6s cubic-bezier(.65,0,.35,1), background-color 0.5s ease;
+    white-space: nowrap;
+  }
+
+  .seller-caption{
+    margin-top: 24px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+  }
+  .seller-caption strong{ color: var(--ink); }
+  #stateLabel{ color: var(--accent-deep); font-weight: 600; }
+
+  /* ---------- Recommendation strip ---------- */
+
+  .rec-strip{
+    margin-top: 76px;
+    background: var(--ink);
+    color: #F3F4F1;
+    border-radius: var(--radius);
+    padding: 34px 36px;
+  }
+  .rec-strip .section-title{ color: #fff; }
+  .rec-strip .section-head{ border-bottom-color: #3A3E38; }
+  .rec-strip .section-num{ color: #8B8D84; }
+
+  .rec-list{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 28px;
+    margin-top: 22px;
+  }
+  .rec-item{
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #C9CBC4;
+    padding-left: 16px;
+    border-left: 2px solid var(--accent);
+  }
+  .rec-item strong{ color: #fff; display:block; font-weight:600; margin-bottom:3px; }
+
+  /* ---------- Footer ---------- */
+
+  footer{
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    line-height: 1.7;
+  }
+  footer strong{ color: var(--ink-soft); }
+
+  @media (max-width: 720px){
+    .grid-2{ grid-template-columns: 1fr; }
+    .rec-list{ grid-template-columns: 1fr; }
+    h1{ font-size: 30px; }
+    .hero-stat .big{ font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <div class="eyebrow">AI-Assisted Business Analysis &nbsp;·&nbsp; Project 02</div>
+  <h1>What drives customer value in this e-commerce business — and where should it focus next?</h1>
+  <div class="subhead">
+    Using AI to accelerate analysis while keeping validation and business judgment human-controlled.
+    Shopee Thailand transaction data, 2022–2025 (synthetic). 300,000 orders across 55,822 customers
+    with at least one completed purchase, analyzed with SQL as the primary analytical layer and
+    Python for validation and visualization.
+  </div>
+
+  <div class="hero-stat">
+    <div class="big">32% → 55.7%</div>
+    <div class="desc">Customers with <strong>6+ completed orders</strong> are <strong>32% of the customer
+      base</strong> but generate <strong>55.7% of realized revenue</strong> — the single strongest
+      pattern in the data.</div>
+  </div>
+
+  <!-- ============ SECTION 01 — CUSTOMER VALUE ============ -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Customer Value</h2>
+    </div>
+    <p class="section-q">Which customers create the most value, and is a standard RFM score
+      enough to find them, or does the data need a different approach?
+      <em>Purchase frequency</em> turned out to be the answer — tested against category,
+      product, and seller cuts, and it held up every time.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Customers by purchase frequency</h3>
+        <div class="bars" id="barsCustomers"></div>
+      </div>
+      <div class="card">
+        <h3>Avg. realized revenue / customer</h3>
+        <div class="bars" id="barsRevenue"></div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <strong>Finding —</strong> average revenue per customer increased consistently across every
+      frequency band, rather than being concentrated in a single high-value group:
+      ฿12,366 (1 order) → ฿30,521 → ฿54,227 → ฿83,616 → ฿124,741 (9+ orders).
+      A pure additive RFM score was tested and rejected: it mixed newly-registered and one-time
+      high-spend customers into the same tier as genuinely repeat customers.
+    </div>
+  </section>
+
+  <!-- ============ SECTION 02 — CATEGORY & PRODUCT ============ -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Category &amp; Product</h2>
+    </div>
+    <p class="section-q">Do high-value customers buy differently — a specific category,
+      a specific product? Tested at both levels. <em>Neither showed meaningful affinity.</em></p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Revenue mix by category</h3>
+        <div class="catmix" id="barsCategory"></div>
+      </div>
+      <div class="card">
+        <h3>AOV vs. repeat rate by category</h3>
+        <div style="position:relative; padding-left:14px;">
+          <div class="scatter-ylabel">repeat rate →</div>
+          <div class="scatter" id="scatterChart"></div>
+          <div class="scatter-axis"><span>฿200</span><span>avg order value (log)</span><span>฿20,000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:24px;">
+      <h3>Category over-index for high-value segments (1.0 = no affinity)</h3>
+      <div id="overIndexChart"></div>
+      <div class="oi-scale"><span>0.85</span><span>1.0</span><span>1.15</span></div>
+    </div>
+
+    <div class="finding">
+      <strong>Finding —</strong> every over-index ratio for B1/B2 sits within ±6% of 1.0 — well
+      inside the ±15% band used as a descriptive threshold here (a business heuristic, not a
+      statistical significance test). Product-level testing (top 30 products, ≥100 buyers each)
+      confirmed the same: no meaningful concentration. Electronics has a lower in-category repeat
+      rate (41.1% vs Home's 75.5%), but Electronics buyers have <em>higher</em> overall frequency
+      and spend than Home buyers — consistent with a naturally longer durable-goods purchase
+      cycle, not disengagement.
+    </div>
+  </section>
+
+  <!-- ============ SECTION 03 — SELLER PERFORMANCE (signature) ============ -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Seller Performance</h2>
+    </div>
+    <p class="section-q">Are outcomes concentrated among particular seller types, and is the
+      revenue difference between FBS and Standard logistics real?
+      <em>Toggle below</em> — the raw numbers and the normalized numbers tell two different stories.</p>
+
+    <div class="seller-hero">
+      <div class="toggle-row">
+        <span class="toggle-label">Raw revenue / seller</span>
+        <button class="toggle" id="sellerToggle" aria-label="Toggle normalization"></button>
+        <span class="toggle-label">Normalized: revenue / product</span>
+      </div>
+
+      <div class="seller-bars">
+        <div class="seller-bar-group">
+          <div class="seller-bar-title"><span>FBS</span><span class="n">60 sellers · 16 products each</span></div>
+          <div class="seller-track"><div class="seller-fill" id="fillFBS"></div></div>
+        </div>
+        <div class="seller-bar-group">
+          <div class="seller-bar-title"><span>Standard</span><span class="n">140 sellers · 28 products each</span></div>
+          <div class="seller-track"><div class="seller-fill" id="fillStandard"></div></div>
+        </div>
+      </div>
+
+      <div class="seller-caption">
+        <span id="stateLabel">Raw view:</span>
+        <span id="stateCaption">Standard sellers appear to generate ~72% more revenue than FBS
+        sellers (฿17.5M vs ฿10.1M avg). This is the number a first pass would report.</span>
+      </div>
+    </div>
+
+    <div class="finding" style="margin-top:20px;">
+      <strong>Finding —</strong> FBS and Standard sellers have a <em>deterministic</em> catalog-size
+      difference (16 vs 28 products, no exceptions) baked into this dataset. Once revenue is
+      normalized per product, the gap nearly disappears (฿634K vs ฿624K) — the raw comparison was
+      measuring catalog size, not logistics performance. Separately, Company sellers do show a real,
+      moderate revenue-efficiency edge over Individual sellers (~18–20% higher per product/customer)
+      that catalog size does not explain — though Individual sellers attract customers with higher
+      overall purchase frequency, so this is an association worth investigating, not a verdict.
+    </div>
+  </section>
+
+  <!-- ============ RECOMMENDATIONS ============ -->
+  <section class="rec-strip">
+    <div class="section-head">
+      <span class="section-num">→</span>
+      <h2 class="section-title">So what should the business prioritize?</h2>
+    </div>
+    <div class="rec-list">
+      <div class="rec-item">
+        <strong>Prioritize frequency growth</strong>
+        Focus retention and engagement initiatives on regular/occasional customers rather than
+        category-specific targeting — frequency is the lever the data actually supports.
+      </div>
+      <div class="rec-item">
+        <strong>Targeted re-engagement, not a broad campaign</strong>
+        A small group of 547 historically high-frequency customers (0.98% of the base, ฿48.2M in
+        past value) have gone 180+ days without a purchase — small enough for direct outreach.
+      </div>
+      <div class="rec-item">
+        <strong>Investigate Company sellers' efficiency edge</strong>
+        The ~18–20% gap over Individual sellers isn't explained by catalog size — worth a
+        qualitative look at pricing, presentation, and fulfillment practices before acting on it.
+      </div>
+      <div class="rec-item">
+        <strong>Don't act on the raw FBS/Standard gap</strong>
+        It's a catalog-size artifact. Any seller-support decision should be based on
+        normalized metrics, not raw seller revenue.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <strong>Limitations —</strong> This analysis is observational; findings describe associations,
+    not causal effects. Customer segments (B0–B6) are analytical business rules built for this
+    project, not an existing CRM system. The dataset is synthetic. Full methodology, SQL, and a
+    reproducible Python notebook are in the project repository.
+  </footer>
+
+</div>
+
+<script>
+  // ---------- Data (verified against SQL + notebook) ----------
+  const freqBands = [
+    {label:'1',      customers:7587,  revenue:12366},
+    {label:'2–3',    customers:16321, revenue:30521},
+    {label:'4–5',    customers:14062, revenue:54227},
+    {label:'6–8',    customers:12792, revenue:83616},
+    {label:'9+',     customers:5060,  revenue:124741},
+  ];
+
+  const catMix = [
+    {label:'Home', pct:62.4},
+    {label:'Electronics', pct:33.8},
+    {label:'Fashion', pct:2.9},
+    {label:'Groceries', pct:0.5},
+    {label:'Beauty', pct:0.4},
+  ];
+
+  const scatterData = [
+    {label:'Home', aov:12393, repeat:75.5},
+    {label:'Electronics', aov:19941, repeat:41.1},
+    {label:'Groceries', aov:219, repeat:50.2},
+    {label:'Fashion', aov:3271, repeat:23.7},
+    {label:'Beauty', aov:902, repeat:13.2},
+  ];
+
+  const overIndex = [
+    {label:'B1', values:[{cat:'Home',v:1.00},{cat:'Electronics',v:1.00},{cat:'Fashion',v:0.99},{cat:'Groceries',v:1.00},{cat:'Beauty',v:0.99}]},
+    {label:'B2', values:[{cat:'Home',v:1.00},{cat:'Electronics',v:1.00},{cat:'Fashion',v:0.95},{cat:'Groceries',v:0.97},{cat:'Beauty',v:1.06}]},
+  ];
+
+  const sellerData = {
+    raw: { fbs: 10.1, std: 17.5, unit:'M', max: 17.5,
+      caption: 'Standard sellers appear to generate ~72% more revenue than FBS sellers (฿17.5M vs ฿10.1M avg). This is the number a first pass would report.' },
+    norm: { fbs: 634, std: 624, unit:'K', max: 634,
+      caption: 'Once normalized by catalog size (16 vs 28 products/seller), the gap nearly disappears — ฿634K vs ฿624K revenue per product. The raw gap was measuring catalog size, not logistics quality.' }
+  };
+
+  // ---------- render: customer bars ----------
+  function renderBars(containerId, items, valueKey, formatter, maxOverride){
+    const el = document.getElementById(containerId);
+    const max = maxOverride || Math.max(...items.map(d=>d[valueKey]));
+    el.innerHTML = items.map(d => `
+      <div class="bar-row">
+        <div class="bar-label">${d.label}</div>
+        <div class="bar-track"><div class="bar-fill accent" style="width:${(d[valueKey]/max*100).toFixed(1)}%"></div></div>
+        <div class="bar-value">${formatter(d[valueKey])}</div>
+      </div>
+    `).join('');
+  }
+
+  renderBars('barsCustomers', freqBands, 'customers', v => v.toLocaleString());
+  renderBars('barsRevenue', freqBands, 'revenue', v => '฿'+v.toLocaleString());
+
+  // category mix
+  (function(){
+    const el = document.getElementById('barsCategory');
+    const max = Math.max(...catMix.map(d=>d.pct));
+    el.innerHTML = catMix.map(d => `
+      <div class="bar-row">
+        <div class="bar-label">${d.label}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(d.pct/max*100).toFixed(1)}%; background:var(--neutral-bar);"></div></div>
+        <div class="bar-value">${d.pct}%</div>
+      </div>
+    `).join('');
+  })();
+
+  // scatter (log-ish placement by manual scaling)
+  (function(){
+    const el = document.getElementById('scatterChart');
+    const minLog = Math.log10(150), maxLog = Math.log10(22000);
+    const minY = 0, maxY = 85;
+    scatterData.forEach(d => {
+      const x = (Math.log10(d.aov) - minLog) / (maxLog - minLog) * 100;
+      const y = (d.repeat - minY) / (maxY - minY) * 100;
+      const pt = document.createElement('div');
+      pt.className = 'pt';
+      pt.style.left = x + '%';
+      pt.style.bottom = y + '%';
+      const lbl = document.createElement('div');
+      lbl.className = 'pt-label';
+      lbl.style.left = x + '%';
+      lbl.style.bottom = y + '%';
+      lbl.textContent = d.label;
+      el.appendChild(pt);
+      el.appendChild(lbl);
+    });
+  })();
+
+  // over-index dot plot
+  (function(){
+    const el = document.getElementById('overIndexChart');
+    const minV = 0.85, maxV = 1.15;
+    el.innerHTML = overIndex.map(row => `
+      <div class="overindex-row">
+        <div class="bar-label" style="text-align:left;">${row.label}</div>
+        <div class="oi-track">
+          ${row.values.map(v => `<div class="oi-dot" style="left:${((v.v-minV)/(maxV-minV)*100).toFixed(1)}%;" title="${v.cat}: ${v.v}"></div>`).join('')}
+        </div>
+      </div>
+    `).join('');
+  })();
+
+  // ---------- seller toggle (signature interactive element) ----------
+  const toggle = document.getElementById('sellerToggle');
+  const fillFBS = document.getElementById('fillFBS');
+  const fillStandard = document.getElementById('fillStandard');
+  const stateLabel = document.getElementById('stateLabel');
+  const stateCaption = document.getElementById('stateCaption');
+
+  function paintSeller(mode){
+    const d = sellerData[mode];
+    const fbsPct = (d.fbs / d.max * 100).toFixed(1);
+    const stdPct = (d.std / d.max * 100).toFixed(1);
+
+    fillFBS.style.width = fbsPct + '%';
+    fillStandard.style.width = stdPct + '%';
+    fillFBS.textContent = '฿' + d.fbs + d.unit;
+    fillStandard.textContent = '฿' + d.std + d.unit;
+
+    if(mode === 'raw'){
+      fillFBS.style.background = 'var(--neutral-bar)';
+      fillStandard.style.background = 'var(--warn)';
+      stateLabel.textContent = 'Raw view:';
+    } else {
+      fillFBS.style.background = 'var(--accent)';
+      fillStandard.style.background = 'var(--accent)';
+      stateLabel.textContent = 'Normalized view:';
+    }
+    stateCaption.textContent = d.caption;
+  }
+
+  paintSeller('raw');
+
+  toggle.addEventListener('click', () => {
+    const isOn = toggle.classList.toggle('on');
+    paintSeller(isOn ? 'norm' : 'raw');
+  });
+</script>
+
+</body>
+</html>
