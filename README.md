@@ -1,3 +1,7 @@
+🇬🇧 English ・ [🇯🇵 日本語版はこちら](README.ja.md)
+
+---
+
 # Using AI to Accelerate E-commerce Business Analysis
 
 **[SQL](sql/) · [Notebook](analysis/customer_product_analysis.ipynb) · [Dashboard](dashboard/index.html) · [One-page summary](presentation/summary.md) · [Data notes](data/README.md)**
