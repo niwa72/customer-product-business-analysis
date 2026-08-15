@@ -54,7 +54,28 @@ that are mechanical so I could spend more time on validation and interpretation.
 - Interpreting what a finding does and doesn't support
 - Final business recommendations
 
-Three examples from this project show what that division of labor actually looked like.
+### Why I used AI
+
+The main reason wasn't just speed. Having AI help draft SQL, run repeated cuts of the data, and
+try different angles meant I could test more than one hypothesis instead of sinking all my time
+into the first one. At the same time, I didn't treat AI output as correct by default — the habit I
+tried to keep throughout was asking "is this actually a fair comparison?" and "could something else
+explain this difference?" before trusting a result.
+
+Through this project, I found AI works best for me not as something I hand the analysis to, but as
+a way to generate material to think with faster and increase how many times I can check my own
+assumptions. The RFM segmentation choice and the FBS/Standard comparison are the clearest examples
+of that — AI let me try multiple approaches quickly, but deciding which one actually held up still
+required checking the distributions and assumptions myself.
+
+What I took from that isn't just SQL syntax — it's that in data analysis, asking "should I actually
+believe this number?" and "how far can this finding really be extended?" matters as much as the
+query that produced it. AI was most useful for reducing time spent on repetitive analysis work and
+making it easier to test different approaches quickly; what I learned is that faster analysis
+doesn't automatically mean better analysis — the part that still mattered was knowing what to
+question, what to validate, and when a result shouldn't be taken at face value.
+
+The three examples below show that process in action.
 
 ### Example 1 — Choosing how to segment customers
 
@@ -90,24 +111,22 @@ Electronics initially looked like it might have a retention problem — its with
 rate (41.1%) was much lower than Home's (75.5%). Looking closer, Electronics buyers actually had
 *higher* overall purchase frequency and monetary value than Home buyers, and the gap between
 purchases within Electronics was structurally longer — consistent with a durable-goods category
-that people simply don't rebuy often, not with disengaged customers. I did not label Electronics a
-retention problem based on the first number; I checked what the customers behind that number
-actually looked like.
+that people simply don't rebuy often, rather than clear evidence of disengagement. I did not label
+Electronics a retention problem based on the first number; I checked what the customers behind
+that number actually looked like before drawing a conclusion.
 
 ---
 
 ## What AI Changed
 
-AI was most useful for accelerating repetitive SQL drafting, generating alternative analytical
-approaches to compare, surfacing edge cases worth validating, structuring documentation, and
-iterating quickly on visualizations. Concretely, it reduced the amount of repetitive execution and
-write-up, allowing more time to be spent on validation and business reasoning.
-
-What stayed with me throughout: deciding what the business question actually was, deciding which
-metrics were appropriate for that question, checking whether the underlying assumptions held up,
-rejecting comparisons that turned out to be misleading (like raw FBS/Standard revenue), and
-judging whether a finding was strong enough to support a recommendation. AI didn't make any of
-those calls — it made it faster to test them.
+Working this way changed how I approach a new dataset. Instead of committing to one method early
+and hoping it holds up, I now default to sketching two or three approaches quickly and letting the
+data's actual distribution decide between them — the RFM/frequency-band choice and the FBS/Standard
+normalization above are both products of that habit. It also made me more comfortable treating a
+first analytical result as a starting question rather than an answer. The main lesson wasn't simply
+how to analyze data faster with AI — it was how to use that speed without giving up analytical
+judgment, which is the mindset I'd want to bring into a role that involves judging numbers I didn't
+produce myself.
 
 ---
 
